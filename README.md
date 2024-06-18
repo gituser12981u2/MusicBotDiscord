@@ -37,7 +37,7 @@ npm install
 brew install ffmpeg
 ```
 
-- Windows
+- Windows:
 Follow the instructions on [FFMPEG download page](https://ffmpeg.org/download.html) to download the executable and add it to your PATH.
 
 - Linux:
@@ -63,12 +63,12 @@ npm start
 ```
 
 ## Commands
-  !play <url_or_search_term>: Play music from a URL or search for a track.
-  !queue: Shows the current queue.
-  !pause: Pause the current track.
-  !resume: Resume playback.
-  !skip: Skip to the next track in the queue.
-  !disconnect: Stop playback and clear the queue.
+- !play <url_or_search_term>: Play music from a URL or search for a track.
+- !queue: Shows the current queue.
+- !pause: Pause the current track.
+- !resume: Resume playback.
+- !skip: Skip to the next track in the queue.
+- !disconnect: Stop playback and clear the queue.
 
 ## Contributing
 Contributions to MusicBotDiscord are welcome. If you have suggestions or improvements, feel free to fork the repository and submit a pull request.
