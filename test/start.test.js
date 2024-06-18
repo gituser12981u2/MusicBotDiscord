@@ -6,13 +6,15 @@ describe('Bot Start', function() {
         function(done) {
             this.timeout(10000); // 10 seconds timeout
             const bot = exec('node src/index.js', (error, stdout, stderr) => {
-                assert.strictEqual(error, null);
-                done();
+                if (error && error.signal !== 'SIGINT') {
+                    done(error);
+                } else {
+                    done();
+                }
             });
 
             setTimeout(() => {
                 bot.kill('SIGINT');
-                done();
             }, 5000) // Run the bot for 5 seconds
         }
     );
