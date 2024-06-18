@@ -8,13 +8,12 @@ describe('Bot Start', function() {
             const bot = exec('node src/index.js', (error, stdout, stderr) => {
                 if (error && error.signal !== 'SIGINT') {
                     done(error);
-                } else {
-                    done();
                 }
             });
 
             setTimeout(() => {
                 bot.kill('SIGINT');
+                done();
             }, 5000) // Run the bot for 5 seconds
         }
     );
