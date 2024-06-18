@@ -1,4 +1,5 @@
 // src/commands/music.js
+const logger = require('../logger.js');
 const { playSong, pauseSong, resumeSong, skipSong, printQueue, disconnect } = require('./musicCommands.js');
 
 module.exports = function (client) {
@@ -11,26 +12,35 @@ module.exports = function (client) {
         const command = args[0];
         const song = args.slice(1).join(' ');
 
+        logger.info(`Received command: ${command}`);
+
         switch (command) {
             case '!play':
-                playSong(message, song, queue);
+                logger.info('Executing !play command');
+                playSong(client, message, song, queue);
                 break;
             case '!pause':
+                logger.info('Executing !pause command');
                 pauseSong(message, queue);
                 break;
             case '!resume':
+                logger.info('Executing !resume command');
                 resumeSong(message, queue);
                 break;
             case '!skip':
+                logger.info('Executing !skip command');
                 skipSong(message, queue);
                 break;
             case '!queue':
+                logger.info('Executing !queue command');
                 printQueue(message, queue);
                 break;
             case '!disconnect':
+                logger.info('Executing !disconnect command');
                 disconnect(message, queue);
                 break;
             default:
+                logger.info('Unknown command');
                 message.reply('Unknown command.');
         }
     });

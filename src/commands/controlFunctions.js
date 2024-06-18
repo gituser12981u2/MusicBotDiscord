@@ -3,37 +3,54 @@ const { AudioPlayerStatus } = require('@discordjs/voice');
 
 function pauseSong(message, queue) {
     const serverQueue = queue.get(message.guild.id);
-    if (!serverQueue) return message.send('There is nothing playing.');
+    if (!serverQueue) return message.channel.send('There is nothing playing.');
 
-    if (serverQueue && serverQueue.player.state.status !== AudioPlayerStatus.Paused) {
+    logger.info('Attempting to pause the audio player...')
+    if (serverQueue.player.state.status == AudioPlayerStatus.Playing) {
         serverQueue.player.pause(true);
         return message.channel.send('⏸ Paused the music.');
+    } else {
+        return message.channel.send('The music is already paused or not playing.');
     }
 }
 
 function resumeSong(message, queue) {
     const serverQueue = queue.get(message.guild.id);
-    if (!serverQueue) return message.send('There is nothing playing.');
+    if (!serverQueue) return message.channel.send('There is nothing playing.');
 
-    if (serverQueue && serverQueue.player.state.status === AudioPlayerStatus.Paused) {
+    logger.info('Attempting to resume the audio player...')
+    if (serverQueue.player.state.status === AudioPlayerStatus.Paused) {
         serverQueue.player.unpause();
         return message.channel.send('▶ Resumed the music.');
+    } else {
+        return message.channel.send('The music is not paused.');
     }
 }
 
 function skipSong(message, queue) {
     const serverQueue = queue.get(message.guild.id);
-    if (serverQueue === 0) return message.send('There is no song playing.');
+    if (!serverQueue) return message.channel.send('There is no song playing.');
 
-    serverQueue.player.stop();
+    const currentSong = serverQueue.songs.shift();
+    if (serverQueue.songs.length > 0) {
+        const nextSong = serverQueue.songs[0];
+        serverQueue.player.stop();
+        return message.channel.send(`⏭ Skipped the song. Now playing: **${nextSong.title}**`);
+    } else {
+        serverQueue.player.stop();
+        return message.channel.send('⏭ Skipped the song. There are no more songs in the queue.');
+    }
 }
 
 function disconnect(message, queue) {
     const serverQueue = queue.get(message.guild.id);
-    if (!serverQueue) return message.channel.send('I am not conected to the voice channel.');
+    if (!serverQueue) return message.channel.send('I am not connected to the voice channel.');
 
     serverQueue.songs = [];
     serverQueue.player.stop();
+    serverQueue.connection.destroy();
+    queue.delete(message.guild.id);
+    return message.channel.send(`Disconnected from the voice channel.`);
 }
 
 module.exports = {

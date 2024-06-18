@@ -1,10 +1,11 @@
-// src/commands/musicFunctions.js
 const { joinVoiceChannel, createAudioPlayer, AudioPlayerStatus, createAudioResource, NoSubscriberBehavior } = require('@discordjs/voice');
-const { stream, search, video_info } = require('play-dl');
+const ytdl = require('ytdl-core')
+const { search, video_info } = require('play-dl');
 const { pauseSong, resumeSong, skipSong, disconnect } = require('./controlFunctions');
 const { EmbedBuilder } = require('discord.js');
+const logger = require('../logger');
 
-async function playSong(message, urlOrSearchTerm, queue) {
+async function playSong(client, message, urlOrSearchTerm, queue) {
     const guildId = message.guild.id;
     let url = urlOrSearchTerm;
     let songInfo;
@@ -18,7 +19,7 @@ async function playSong(message, urlOrSearchTerm, queue) {
         }
         url = searchResults[0].url;
         songInfo = searchResults[0];
-        //console.log(songInfo)
+        logger.info(songInfo);
     } else {
         // check if valid yt URL
         if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
@@ -62,8 +63,20 @@ async function playSong(message, urlOrSearchTerm, queue) {
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
             queueConstruct.connection = connection;
+
+            connection.on('stateChange', (oldState, newState) => {
+                logger.info(`Voice connection transitioned from ${oldState.status} to ${newState.status}`);
+                if (newState.status === 'ready') {
+                    logger.info('Voice connection is ready!');
+                }
+            });
+
+            // Explicitly undeafen the bot
+            const botMember = await message.guild.members.fetch(client.user.id);
+            botMember.voice.setDeaf(false);
+
             queueConstruct.connection.subscribe(queueConstruct.player);
-            play(guildId, queueConstruct.songs[0], queue);
+            play(client, guildId, queueConstruct.songs[0], queue);
         } catch (err) {
             console.log(err);
             queue.delete(guildId);
@@ -76,45 +89,74 @@ async function playSong(message, urlOrSearchTerm, queue) {
     }
 }
 
-async function play(guildId, song, queue) {
+async function play(client, guildId, song, queue) {
     const serverQueue = queue.get(guildId);
     if (!song) {
         setTimeout(() => {
-            if (serverQueue.songs.length === 0) {
-                serverQueue.voiceChannel.leave();
+            if (serverQueue.songs.length === 0 && serverQueue.connection.state.status !== "destroyed") {
+                serverQueue.connection.destroy();
                 queue.delete(guildId);
             }
         }, 18000);
         return;
     }
 
-    const streamResult = await stream(song.url, { quality: 0, format: 'opus' });
-    const resource = createAudioResource(streamResult.stream, { inputType: streamResult.type });
+    try {
+        logger.info('Creating stream with ytdl-core...');
+        const stream = ytdl(song.url, {
+            filter: 'audioonly',
+            quality: 'highestaudio',
+            highWaterMark: 1 << 25 // 32MB
+        });
+        logger.info('Stream created with ytdl-core.');
+        logger.info('Creating audio resource...');
+        const resource = createAudioResource(stream);
+        logger.info('Audio resource created:', resource);
 
-    serverQueue.player.play(resource);
+        logger.info('Player state before playing:', serverQueue.player.state.status);
+        serverQueue.player.play(resource);
+        logger.info('Player state after playing:', serverQueue.player.state.status);
 
-    serverQueue.player.on('stateChange', (oldState, newState) => {
-        console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
-        if (newState.status === AudioPlayerStatus.Idle) {
-            serverQueue.songs.shift();
-            play(guildId, serverQueue.songs[0], queue);
+        serverQueue.player.on('stateChange', (oldState, newState) => {
+            logger.info(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
+            if (newState.status === AudioPlayerStatus.Idle) {
+                serverQueue.songs.shift();
+                play(client, guildId, serverQueue.songs[0], queue);
+            } else if (newState.status === AudioPlayerStatus.Playing) {
+                logger.info('Audio player is playing');
+            } else if (newState.status === AudioPlayerStatus.Paused) {
+                logger.info('Audio player is paused');
+            } else if (newState.status == AudioPlayerStatus.Buffering) {
+                logger.info('Audio player is buffering');
+            } else if (newState.status == AudioPlayerStatus.AutoPaused) {
+                logger.info('Audio player is auto paused');
+            }
+        });
+        
+        serverQueue.player.on('error', error => {
+            logger.error(`Error: ${error.message} with resource ${error.resource.metadata.title}`);
+        })
+
+        logger.info(`Playing song: ${song.title}`);
+
+        if (song.title && song.url && song.thumbnail && song.duration && song.request) {
+            const songEmbed = new EmbedBuilder()
+                .setColor(0x0099FF)
+                .setTitle(song.title)
+                .setURL(song.url)
+                .setAuthor({ name: 'Now Playing 🎶' })
+                .setThumbnail(song.thumbnail)
+                .addFields(
+                    { name: 'Duration', value: `${song.duration}`, inline: true },
+                    { name: 'Request by', value: `${song.request}`, inline: true },
+                )
+                .setTimestamp();
+
+            serverQueue.textChannel.send({ embeds: [songEmbed] });
         }
-    });
-
-    if (song.title && song.url && song.thumbnail && song.duration && song.request) {
-        const songEmbed = new EmbedBuilder()
-            .setColor(0x0099FF)
-            .setTitle(song.title)
-            .setURL(song.url)
-            .setAuthor({ name: 'Now Playing 🎶' })
-            .setThumbnail(song.thumbnail)
-            .addFields(
-                { name: 'Duration', value: `${song.duration}`, inline: true },
-                { name: 'Request by', value: `${song.request}`, inline: true },
-            )
-            .setTimestamp();
-
-        serverQueue.textChannel.send({ embeds: [songEmbed] });
+    } catch (error) {
+        logger.error('Error in play function:', error);
+        serverQueue.textChannel.send('An error occurred while trying to play the song.');
     }
 }
 

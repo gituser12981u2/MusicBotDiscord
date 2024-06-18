@@ -1,0 +1,51 @@
+2024-06-18T20:35:16.403Z [info]: Ready! Logged in as bot1252674334816731277#1227!
+2024-06-18T20:35:36.558Z [info]: Received command: !play
+2024-06-18T20:35:36.559Z [info]: Executing !play command
+2024-06-18T20:35:37.316Z [info]: https://www.youtube.com/watch?v=MuMsLcAsdLc
+2024-06-18T20:35:37.320Z [info]: Voice connection transitioned from signalling to signalling
+2024-06-18T20:35:37.320Z [info]: Creating stream with ytdl-core...
+2024-06-18T20:35:37.322Z [info]: Stream created with ytdl-core.
+2024-06-18T20:35:37.322Z [info]: Creating audio resource...
+2024-06-18T20:35:37.327Z [info]: Audio resource created:
+2024-06-18T20:35:37.328Z [info]: Player state before playing:
+2024-06-18T20:35:37.328Z [info]: Player state after playing:
+2024-06-18T20:35:37.328Z [info]: Playing song: Pretty
+2024-06-18T20:35:37.486Z [info]: Voice connection transitioned from signalling to connecting
+2024-06-18T20:35:37.603Z [info]: Voice connection transitioned from connecting to connecting
+2024-06-18T20:35:37.620Z [info]: Voice connection transitioned from connecting to connecting
+2024-06-18T20:35:37.641Z [info]: Voice connection transitioned from connecting to connecting
+2024-06-18T20:35:37.664Z [info]: Voice connection transitioned from connecting to ready
+2024-06-18T20:35:37.665Z [info]: Voice connection is ready!
+2024-06-18T20:35:38.209Z [info]: Audio player transitioned from buffering to playing
+2024-06-18T20:35:38.209Z [info]: Audio player is playing
+2024-06-18T20:36:56.885Z [info]: Received command: !skip
+2024-06-18T20:36:56.885Z [info]: Executing !skip command
+2024-06-18T20:36:56.991Z [info]: Audio player transitioned from playing to idle
+2024-06-18T20:37:05.704Z [info]: Received command: !disconnect
+2024-06-18T20:37:05.704Z [info]: Executing !disconnect command
+2024-06-18T20:37:05.706Z [info]: Voice connection transitioned from ready to destroyed
+2024-06-18T20:50:54.682Z [info]: Ready! Logged in as bot1252674334816731277#1227!
+2024-06-18T20:51:32.634Z [info]: Received command: !play
+2024-06-18T20:51:32.634Z [info]: Executing !play command
+2024-06-18T20:51:33.259Z [info]: https://www.youtube.com/watch?v=s0YHej69OKo
+2024-06-18T20:51:33.261Z [info]: Voice connection transitioned from signalling to signalling
+2024-06-18T20:51:33.262Z [info]: Creating stream with ytdl-core...
+2024-06-18T20:51:33.264Z [info]: Stream created with ytdl-core.
+2024-06-18T20:51:33.264Z [info]: Creating audio resource...
+2024-06-18T20:51:33.268Z [info]: Audio resource created:
+2024-06-18T20:51:33.269Z [info]: Player state before playing:
+2024-06-18T20:51:33.269Z [info]: Player state after playing:
+2024-06-18T20:51:33.269Z [info]: Playing song: Hello
+2024-06-18T20:51:33.673Z [info]: Voice connection transitioned from signalling to connecting
+2024-06-18T20:51:33.787Z [info]: Voice connection transitioned from connecting to connecting
+2024-06-18T20:51:33.806Z [info]: Voice connection transitioned from connecting to connecting
+2024-06-18T20:51:33.824Z [info]: Voice connection transitioned from connecting to connecting
+2024-06-18T20:51:33.875Z [info]: Voice connection transitioned from connecting to ready
+2024-06-18T20:51:33.875Z [info]: Voice connection is ready!
+2024-06-18T20:51:34.082Z [info]: Audio player transitioned from buffering to playing
+2024-06-18T20:51:34.082Z [info]: Audio player is playing
+2024-06-18T20:52:37.546Z [info]: Received command: !skip
+2024-06-18T20:52:37.546Z [info]: Executing !skip command
+2024-06-18T20:52:37.652Z [info]: Audio player transitioned from playing to idle
+2024-06-18T20:52:55.655Z [info]: Voice connection transitioned from ready to destroyed
+2024-06-18T20:56:56.361Z [info]: Ready! Logged in as bot1252674334816731277#1227!
