@@ -1,6 +1,10 @@
-// src/commands/controlFunctions.js
 const { AudioPlayerStatus } = require('@discordjs/voice');
 
+/**
+ * Pause the current song
+ * @param {Object} message - The message object 
+ * @param {Map} queue - The song queue
+ */
 function pauseSong(message, queue) {
     const serverQueue = queue.get(message.guild.id);
     if (!serverQueue) return message.channel.send('There is nothing playing.');
@@ -14,6 +18,11 @@ function pauseSong(message, queue) {
     }
 }
 
+/**
+ * Resume the paused song
+ * @param {Object} message - The message object
+ * @param {Map} queue - The song queue
+ */
 function resumeSong(message, queue) {
     const serverQueue = queue.get(message.guild.id);
     if (!serverQueue) return message.channel.send('There is nothing playing.');
@@ -27,6 +36,11 @@ function resumeSong(message, queue) {
     }
 }
 
+/**
+ * Skip the current song
+ * @param {Object} message - The message object
+ * @param {Map} queue - The song queue
+ */
 function skipSong(message, queue) {
     const serverQueue = queue.get(message.guild.id);
     if (!serverQueue) return message.channel.send('There is no song playing.');
@@ -42,6 +56,11 @@ function skipSong(message, queue) {
     }
 }
 
+/**
+ * Disconnect the bot from the voice channel
+ * @param {Object} message - The message object
+ * @param {Map} queue - The song queue
+ */
 function disconnect(message, queue) {
     const serverQueue = queue.get(message.guild.id);
     if (!serverQueue) return message.channel.send('I am not connected to the voice channel.');

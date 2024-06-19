@@ -1,4 +1,8 @@
-// src/commands/utils/formatDuration.js
+/**
+ * Format a duration in seconds into a human-readable string
+ * @param {number} duration - The duration in seconds
+ * @returns {string} - The formatted duration string
+ */
 module.exports = function formatDuration(duration) {
     const hours = Math.floor(duration / 3600);
     const minutes = Math.floor((duration - (hours * 3600)) / 60);

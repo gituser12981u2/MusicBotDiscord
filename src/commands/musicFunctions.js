@@ -5,6 +5,14 @@ const { pauseSong, resumeSong, skipSong, disconnect } = require('./controlFuncti
 const { EmbedBuilder } = require('discord.js');
 const logger = require('../logger');
 
+/**
+ * Play a song or search for a song to play
+ * @param {Object} client - The Discord client 
+ * @param {Object} message - The message object 
+ * @param {string} urlOrSearchTerm - The URL or search term for the song
+ * @param {Map} queue - The song queue
+ * @returns possible errors
+ */
 async function playSong(client, message, urlOrSearchTerm, queue) {
     const guildId = message.guild.id;
     let url = urlOrSearchTerm;
@@ -71,10 +79,6 @@ async function playSong(client, message, urlOrSearchTerm, queue) {
                 }
             });
 
-            // Explicitly undeafen the bot
-            const botMember = await message.guild.members.fetch(client.user.id);
-            botMember.voice.setDeaf(false);
-
             queueConstruct.connection.subscribe(queueConstruct.player);
             play(client, guildId, queueConstruct.songs[0], queue);
         } catch (err) {
@@ -89,6 +93,13 @@ async function playSong(client, message, urlOrSearchTerm, queue) {
     }
 }
 
+/**
+ * Play the current song in the queue
+ * @param {Object} client - The Discord client
+ * @param {string} guildId - The ID of the guild
+ * @param {Object} song - The song object
+ * @param {Map} queue  - The song queue
+ */
 async function play(client, guildId, song, queue) {
     const serverQueue = queue.get(guildId);
     if (!song) {
@@ -160,6 +171,11 @@ async function play(client, guildId, song, queue) {
     }
 }
 
+/**
+ * Print the current song queue
+ * @param {Object} message - The message object
+ * @param {*} queue - The song queue
+ */
 function printQueue(message, queue) {
     const serverQueue = queue.get(message.guild.id);
     if (!serverQueue) return message.channel.send('There is no queue!');
