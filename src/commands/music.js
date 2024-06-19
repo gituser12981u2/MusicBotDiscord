@@ -1,7 +1,10 @@
-// src/commands/music.js
 const logger = require('../logger.js');
 const { playSong, pauseSong, resumeSong, skipSong, printQueue, disconnect } = require('./musicCommands.js');
 
+/**
+ * Register music commands with the Discord client
+ * @param {Object} client - The Discord client
+ */
 module.exports = function (client) {
     const queue = new Map();
 
